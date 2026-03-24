@@ -22,7 +22,7 @@ class Inventory(models.Model):
     product_model = models.ForeignKey('ProductModel', on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.serial_number
+        return f'{self.product_model} {self.serial_number}'
 
 class Request(models.Model):
     request_date = models.DateField(auto_now_add=True)
