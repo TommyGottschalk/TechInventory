@@ -1,0 +1,36 @@
+{% extends 'inventory/base.html' %}
+
+{% block content %}
+  <h1>Inventory List</h1>
+
+  {% if inventory_list %}
+    <table style="border-collapse: collapse; width: 100%;">
+      <thead>
+        <tr style="border-bottom: 2px solid black;">
+          <th style="text-align: left; padding: 8px;">Serial Number</th>
+          <th style="text-align: left; padding: 8px;">Available</th>
+          <th style="text-align: left; padding: 8px;">Storage Size</th>
+          <th style="text-align: left; padding: 8px;">Model</th>
+          <th style="text-align: left; padding: 8px;">Manufacturer</th>
+          <th style="text-align: left; padding: 8px;">Category</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for item in inventory_list %}
+          <tr style="border-bottom: 1px solid gray;">
+            <td style="padding: 8px;">{{ item.serial_number }}</td>
+            <td style="padding: 8px;">{{ item.is_available }}</td>
+            <td style="padding: 8px;">{{ item.storage_size }}</td>
+            <td style="padding: 8px;">{{ item.product_model.model_name }}</td>
+            <td style="padding: 8px;">{{ item.product_model.manufacturer }}</td>
+            <td style="padding: 8px;">{{ item.product_model.category.category_name }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+  {% else %}
+    <p>There is no inventory in the system.</p>
+  {% endif %}
+{% endblock %}

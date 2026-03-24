@@ -30,8 +30,8 @@ class Request(models.Model):
     request_date = models.DateField(auto_now_add=True)
     return_date = models.DateField()
     actual_return_date = models.DateField(null=True, blank=True)
-    user = models.ForeignKey(User, on_delete=models.SET_NULL)
-    inventory = models.ForeignKey('Inventory', on_delete=models.SET_NULL)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    inventory = models.ForeignKey('Inventory', on_delete=models.SET_NULL, null=True)
 
     REQUEST_STATUS = (
         ('pending', 'Pending'), ('approved', 'Approved'), ('returned', 'Returned'),

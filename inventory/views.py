@@ -1,8 +1,16 @@
 from django.shortcuts import render
+#from django.views import generic
+from .models import Category, ProductModel, Inventory, Request
 
 # Create your views here.
 def index(request):
-    return render(request, 'inventory/index.html')
+    inventory_list = Inventory.objects.filter(is_available=True).order_by('serial_number')
+
+    context = {
+        'inventory_list': inventory_list,
+    }
+
+    return render(request, 'index.html', context=context)
 
 def request_page(request):
     return render(request, 'inventory/request_page.html')
