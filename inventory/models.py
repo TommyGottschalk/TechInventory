@@ -1,8 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-
-
 class Category(models.Model):
     category_name = models.CharField(max_length=100)
 
@@ -30,8 +28,8 @@ class Request(models.Model):
     request_date = models.DateField(auto_now_add=True)
     return_date = models.DateField()
     actual_return_date = models.DateField(null=True, blank=True)
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    inventory = models.ForeignKey('Inventory', on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    inventory = models.ForeignKey('Inventory', on_delete=models.CASCADE)
 
     REQUEST_STATUS = (
         ('pending', 'Pending'), ('approved', 'Approved'), ('returned', 'Returned'),
