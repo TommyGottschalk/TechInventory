@@ -3,11 +3,50 @@ HEADING
 **************************************/
 
 h1 {
-    color: blue;
+    color: #0066CC;
     font-family: arial, sans-serif;
     font-size: 16px;
     font-weight: bold;
     margin-top: 0px;
     margin-bottom: 1px;
     }
-    
+
+.navbar {
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+}
+
+.navbar .nav-link {
+    color: rgba(255,255,255,0.85);
+    transition: 0.2s;
+}
+
+.navbar .nav-link:hover {
+    color: blue;
+    transform: translateY(-3px);
+}
+
+body {
+    background-color: #CCE5FF
+}
+
+.table th {
+    background-color: #CCE5FF
+}
+
+h1 {
+    font-size: 25px;
+    font-weight: 600;
+    margin: 30px 0 20px;
+    color: #1f3c5a;
+    letter-spacing: 0.5px;
+}
+
+h1::after {
+    content: "";
+    display: block;
+    width: 60px;
+    height: 3px;
+    background-color: #3399FF;
+    margin-top: 8px;
+    border-radius: 2px;
+}

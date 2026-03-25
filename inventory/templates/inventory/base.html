@@ -11,7 +11,10 @@
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #3399FF;">
+    <a href="{% url 'index' %}">
+        <img src="{% static 'images/techinvlogo.png' %}" alt="Logo" height="60" style="padding-left: 10px;">
+    </a>
     <div class="container-fluid">
         <a class="navbar-brand" href="{% url 'index' %}">Tech Inventory</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
