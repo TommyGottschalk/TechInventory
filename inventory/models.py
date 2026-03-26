@@ -30,6 +30,7 @@ class Request(models.Model):
     actual_return_date = models.DateField(null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     inventory = models.ForeignKey('Inventory', on_delete=models.CASCADE)
+    charger_requested = models.BooleanField(default=False)
 
     REQUEST_STATUS = (
         ('pending', 'Pending'), ('approved', 'Approved'), ('returned', 'Returned'),
