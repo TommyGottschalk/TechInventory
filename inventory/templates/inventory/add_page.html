@@ -1,5 +1,64 @@
 {% extends "inventory/base.html" %}
 
 {% block content %}
-<h1>Add Device</h1>
+<div class="row mt-4">
+    <div class="col-md-8">
+        <h5 class="mb-4">Enter Device Information to add it to the System</h5>
+
+        <form method="POST" action="{% url 'add_page' %}">
+            {% csrf_token %}
+
+            <div class="row mb-3 align-items-center">
+                <label for="device_type" class="col-sm-3 col-form-label text-end">Device Type:</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control border-dark" id="device_type" name="device_type" required>
+                </div>
+            </div>
+
+            <div class="row mb-3 align-items-center">
+                <label for="manufacturer" class="col-sm-3 col-form-label text-end">Manufacturer:</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control border-dark" id="manufacturer" name="manufacturer" required>
+                </div>
+            </div>
+
+             <div class="row mb-3 align-items-center">
+                <label for="model_name" class="col-sm-3 col-form-label text-end">Model:</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control border-dark" id="model_name" name="model_name" required>
+                </div>
+            </div>
+
+            <div class="row mb-3 align-items-center">
+                <label for="serial_number" class="col-sm-3 col-form-label text-end">Serial Number:</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control border-dark" id="serial_number" name="serial_number" required>
+                </div>
+            </div>
+
+            <div class="row mb-3 align-items-center">
+                <label for="storage_size" class="col-sm-3 col-form-label text-end">Storage Size:</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control border-dark" id="storage_size" name="storage_size" required>
+                </div>
+            </div>
+
+            <div class="row mb-3 align-items-center">
+                <label for="status" class="col-sm-3 col-form-label text-end">Status:</label>
+                <div class="col-sm-6">
+                    <select class="form-select border-dark" id="status" name="status">
+                        <option value="Available">Available</option>
+                        <option value="Unavailable">Unavailable</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-sm-9 text-end">
+                    <button type="submit" class="btn btn-primary">Add Device</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 {% endblock %}
