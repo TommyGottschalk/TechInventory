@@ -1,5 +1,59 @@
 {% extends "inventory/base.html" %}
 
 {% block content %}
-<h1>Manage Device</h1>
+<h1>Manage Requests</h1>
+
+    <form method="get">
+    <select name="username">
+        <option value="">All Users</option>
+        {% for user in users %}
+            <option value="{{ user.username }}" {% if request.GET.username == user.username %}selected{% endif %}>
+                {{ user.username }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <select name="return_date">
+        <option value="">All Dates</option>
+        {% for date in return_dates %}
+            <option value="{{ date.value }}" {% if request.GET.return_date == date.value %}selected{% endif %}>
+                {{ date.label }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <button type="submit">Filter</button>
+        <a href="{% url 'manage_page' %}">Clear</a>
+    </form>
+
+    {% if active_requests %}
+<table style="border-collapse: collapse; width: 100%;">
+    <thead>
+        <tr style="border-bottom: 2px solid black;">
+        <th style="padding: 8px;">Serial Number</th>
+        <th style="padding: 8px;">Storage Size</th>
+        <th style="padding: 8px;">Model</th>
+        <th style="padding: 8px;">Manufacturer</th>
+        <th style="padding: 8px;">Category</th>
+        <th style="padding: 8px;">User</th>
+        <th style="padding: 8px;">Return Date</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for req in active_requests %}
+        <tr style="border-bottom: 1px solid gray;">
+            <td style="padding: 8px;">{{ req.inventory.serial_number }}</td>
+            <td style="padding: 8px;">{{ req.inventory.storage_size }}</td>
+            <td style="padding: 8px;">{{ req.inventory.product_model.model_name }}</td>
+            <td style="padding: 8px;">{{ req.inventory.product_model.manufacturer }}</td>
+            <td style="padding: 8px;">{{ req.inventory.product_model.category.category_name }}</td>
+            <td style="padding: 8px;">{{ req.user.username }}</td>
+            <td style="padding: 8px;">{{ req.return_date }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No items are currently loaned out.</p>
+{% endif %}
 {% endblock %}

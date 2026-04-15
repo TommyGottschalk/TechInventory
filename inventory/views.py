@@ -1,3 +1,4 @@
+from django.contrib.sites import requests
 from django.shortcuts import render, redirect
 #import inventory
 #from django.views import generic
@@ -9,6 +10,7 @@ from .forms import UserAddForm, UserEditForm
 from django.db import IntegrityError
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
+from datetime import datetime
 
 # Create your views here.
 def index(request):
@@ -21,6 +23,7 @@ def index(request):
     manufacturer = request.GET.get('manufacturer')
     available = request.GET.get('available')
     storage_size = request.GET.get('storage_size')
+
 
     if category:
         inventory_list = inventory_list.filter(product_model__category__category_name=category)
@@ -36,6 +39,19 @@ def index(request):
     elif available == "no":
         inventory_list = inventory_list.filter(is_available=False)
 
+    active_requests = Request.objects.filter(
+        status='approved',
+        actual_return_date__isnull=True)
+
+    loaned_users = {
+        req.inventory.serial_number: req.user.username
+        for req in active_requests}
+
+    for item in inventory_list:
+        item.loaned_user = loaned_users.get(
+            item.serial_number,
+            "Available" if item.is_available else "Unavailable")
+
     context = {
         'inventory_list': inventory_list,
         'categories': categories,
@@ -44,9 +60,11 @@ def index(request):
         'manufacturer': manufacturer,
         'storage_size': storage_size,
         'available': available,
+        'loaned_users': loaned_users,
     }
 
     return render(request, 'index.html', context=context)
+
 
 
 
@@ -87,7 +105,40 @@ def return_page(request):
     return render(request, 'inventory/return_page.html')
 
 def manage_page(request):
-    return render(request, 'inventory/manage_page.html')
+    active_requests = Request.objects.filter(
+        status='approved',
+        actual_return_date__isnull=True)
+
+    users = User.objects.all().order_by('username')
+    username = request.GET.get('username')
+    return_date = request.GET.get('return_date')
+
+    if username:
+        active_requests = active_requests.filter(user__username=username)
+
+    return_dates1 = active_requests.values_list(
+        'return_date', flat=True).distinct().order_by('return_date')
+
+    return_dates = []
+    for d in return_dates1:
+        return_dates.append({
+            'value': d.strftime('%Y-%m-%d'),
+            'label': d.strftime('%B %d, %Y'),
+        })
+
+    if return_date:
+        filter_return_date = datetime.strptime(return_date, '%Y-%m-%d').date()
+        active_requests = active_requests.filter(return_date=filter_return_date)
+
+    context = {
+        'active_requests': active_requests,
+        'users': users,
+        'username': username,
+        'return_date': return_date,
+        'return_dates': return_dates,
+    }
+
+    return render(request, 'inventory/manage_page.html', context=context)
 
 def add_page(request):
     if request.method == 'POST':

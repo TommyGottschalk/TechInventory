@@ -44,6 +44,9 @@
           <th style="text-align: left; padding: 8px;">Model</th>
           <th style="text-align: left; padding: 8px;">Manufacturer</th>
           <th style="text-align: left; padding: 8px;">Category</th>
+            {% if request.user.is_staff %}
+            <th style="text-align: left; padding: 8px;">Loaned User</th>
+            {% endif %}
         </tr>
       </thead>
 
@@ -56,6 +59,9 @@
             <td style="padding: 8px;">{{ item.product_model.model_name }}</td>
             <td style="padding: 8px;">{{ item.product_model.manufacturer }}</td>
             <td style="padding: 8px;">{{ item.product_model.category.category_name }}</td>
+              {% if request.user.is_staff %}
+            <td style="padding: 8px;">{{ item.loaned_user }}</td>
+              {% endif %}
           </tr>
         {% endfor %}
       </tbody>
