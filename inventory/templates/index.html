@@ -20,7 +20,7 @@
         {% for item in inventory_list %}
           <tr style="border-bottom: 1px solid gray;">
             <td style="padding: 8px;">{{ item.serial_number }}</td>
-            <td style="padding: 8px;">{{ item.is_available }}</td>
+            <td style="padding: 8px;">{{ item.is_available|yesno:"Yes,No" }}</td>
             <td style="padding: 8px;">{{ item.storage_size }}</td>
             <td style="padding: 8px;">{{ item.product_model.model_name }}</td>
             <td style="padding: 8px;">{{ item.product_model.manufacturer }}</td>

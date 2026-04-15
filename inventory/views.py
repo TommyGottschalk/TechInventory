@@ -2,6 +2,11 @@ from django.shortcuts import render, redirect
 #import inventory
 #from django.views import generic
 from .models import Category, ProductModel, Inventory, Request
+from django.contrib import messages
+from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
+from .forms import UserAddForm, UserEditForm
+from django.db import IntegrityError
 
 # Create your views here.
 def index(request):
@@ -87,3 +92,58 @@ def add_page(request):
         return redirect('index')
     #If it's a GET request, just show the empty form
     return render(request, 'inventory/add_page.html')
+
+def user_list(request):
+    users_list = User.objects.all().order_by('username')
+
+    context = {
+        'user_list': users_list,
+    }
+    return render(request, 'inventory/user_list.html', context)
+
+def user_create(request):
+    if request.method == 'POST':
+        form = UserAddForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "User has been created successfully.")
+            return redirect('user_list')
+    else:
+        form = UserAddForm()
+
+    context = {
+        'form': form,
+    }
+    return render(request, 'inventory/user_form.html', context)
+
+def user_update(request, pk):
+    user_obj = get_object_or_404(User, pk=pk)
+
+    if request.method == 'POST':
+        form = UserEditForm(request.POST, instance=user_obj)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "User has been updated successfully.")
+            return redirect('user_list')
+    else:
+        form = UserEditForm(instance=user_obj)
+
+    context = {
+        'form': form,
+    }
+    return render(request, 'inventory/user_form.html', context)
+
+def user_delete(request, pk):
+    user_obj = get_object_or_404(User, pk=pk)
+
+    if user_obj.pk == request.user.pk:
+        messages.success(request, "You cannot delete your own account.")
+        return redirect('user_list')
+
+    try:
+        username = user_obj.username
+        user_obj.delete()
+        messages.success(request, username + " has been deleted.")
+    except IntegrityError:
+        messages.success(request, user_obj.username + " cannot be deleted.")
+    return redirect('user_list')
