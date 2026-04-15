@@ -1,5 +1,6 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
+from .views import signup
 
 urlpatterns = [
     path('', views.index, name='index'),
@@ -11,4 +12,6 @@ urlpatterns = [
     path('user/create/', views.user_create, name='user_create'),
     path('user/<int:pk>/update/', views.user_update, name='user_update'),
     path('user/<int:pk>/delete/', views.user_delete, name='user_delete'),
+    path("accounts/", include("django.contrib.auth.urls")),
+    path("accounts/signup/", signup, name="signup"),
 ]

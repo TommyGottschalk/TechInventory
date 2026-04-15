@@ -7,16 +7,49 @@ from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from .forms import UserAddForm, UserEditForm
 from django.db import IntegrityError
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login
 
 # Create your views here.
 def index(request):
-    inventory_list = Inventory.objects.filter(is_available=True).order_by('serial_number')
+    inventory_list = Inventory.objects.all().order_by('serial_number')
+
+    categories = Category.objects.all()
+    manufacturers = ProductModel.objects.values_list('manufacturer', flat=True).distinct()
+
+    category = request.GET.get('category')
+    manufacturer = request.GET.get('manufacturer')
+    available = request.GET.get('available')
+    storage_size = request.GET.get('storage_size')
+
+    if category:
+        inventory_list = inventory_list.filter(product_model__category__category_name=category)
+    
+    if manufacturer:
+        inventory_list = inventory_list.filter(product_model__manufacturer=manufacturer)
+
+    if storage_size:
+        inventory_list = inventory_list.filter(storage_size=storage_size)
+    
+    if available == "yes":
+        inventory_list = inventory_list.filter(is_available=True)
+    elif available == "no":
+        inventory_list = inventory_list.filter(is_available=False)
 
     context = {
         'inventory_list': inventory_list,
+        'categories': categories,
+        'manufacturers': manufacturers,
+        'category': category,
+        'manufacturer': manufacturer,
+        'storage_size': storage_size,
+        'available': available,
     }
 
     return render(request, 'index.html', context=context)
+
+
+
 
 def request_page(request):
     #Data to display on the page
@@ -147,3 +180,16 @@ def user_delete(request, pk):
     except IntegrityError:
         messages.success(request, user_obj.username + " cannot be deleted.")
     return redirect('user_list')
+
+
+def signup(request):
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)  
+            return redirect("index")
+    else:
+        form = UserCreationForm()
+
+    return render(request, "registration/signup.html", {"form": form})

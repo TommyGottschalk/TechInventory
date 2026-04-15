@@ -3,6 +3,37 @@
 {% block content %}
   <h1>Inventory List</h1>
 
+
+  <form method="get">
+    <select name="category">
+        <option value="">All Categories</option>
+        {% for category in categories %}
+            <option value="{{ category.category_name }}" {% if request.GET.category == category.category_name %}selected{% endif %}>
+                {{ category.category_name }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <select name="manufacturer">
+        <option value="">All Manufacturers</option>
+        {% for manufacturer in manufacturers %}
+            <option value="{{ manufacturer }}" {% if request.GET.manufacturer == manufacturer %}selected{% endif %}>
+                {{ manufacturer }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <select name="available">
+        <option value="">All</option>
+        <option value="yes" {% if request.GET.available == "yes" %}selected{% endif %}>Available</option>
+        <option value="no" {% if request.GET.available == "no" %}selected{% endif %}>Unavailable</option>
+    </select>
+
+    <button type="submit">Filter</button>
+    <a href="{% url 'index' %}">Clear</a>
+</form>
+
+
   {% if inventory_list %}
     <table style="border-collapse: collapse; width: 100%;">
       <thead>
