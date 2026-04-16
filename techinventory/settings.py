@@ -127,7 +127,7 @@ STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 # Source static files (where YOUR app css/js/images live)
 STATICFILES_DIRS = [
-BASE_DIR / "inventory" / "inventory/static",
+BASE_DIR / "inventory/static",
 ]
 # WhiteNoise (recommended with DEBUG=False)
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
