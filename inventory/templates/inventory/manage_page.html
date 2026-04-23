@@ -27,32 +27,51 @@
     </form>
 
     {% if active_requests %}
-<table style="border-collapse: collapse; width: 100%;">
-    <thead>
-        <tr style="border-bottom: 2px solid black;">
-        <th style="padding: 8px;">Serial Number</th>
-        <th style="padding: 8px;">Storage Size</th>
-        <th style="padding: 8px;">Model</th>
-        <th style="padding: 8px;">Manufacturer</th>
-        <th style="padding: 8px;">Category</th>
-        <th style="padding: 8px;">User</th>
-        <th style="padding: 8px;">Return Date</th>
+<table class="table table-hover table-bordered border-dark mt-3">
+    <thead class="table-light border-dark">
+        <tr>
+            <th>Serial Number</th>
+            <th>Category</th>
+            <th>Model</th>
+            <th>Manufacturer</th>
+            <th>User</th>
+            <th>Return Date</th>
+            <th class="text-center">Actions</th>
         </tr>
     </thead>
     <tbody>
     {% for req in active_requests %}
-        <tr style="border-bottom: 1px solid gray;">
-            <td style="padding: 8px;">{{ req.inventory.serial_number }}</td>
-            <td style="padding: 8px;">{{ req.inventory.storage_size }}</td>
-            <td style="padding: 8px;">{{ req.inventory.product_model.model_name }}</td>
-            <td style="padding: 8px;">{{ req.inventory.product_model.manufacturer }}</td>
-            <td style="padding: 8px;">{{ req.inventory.product_model.category.category_name }}</td>
-            <td style="padding: 8px;">{{ req.user.username }}</td>
-            <td style="padding: 8px;">{{ req.return_date }}</td>
+        <tr>
+            <td class="align-middle">{{ req.inventory.serial_number }}</td>
+            <td class="align-middle">{{ req.inventory.product_model.category.category_name }}</td>
+            <td class="align-middle">{{ req.inventory.product_model.model_name }}</td>
+            <td class="align-middle">{{ req.inventory.product_model.manufacturer }}</td>
+
+            <td class="align-middle fw-bold">{{ req.user.username }}</td>
+            <td class="align-middle">{{ req.return_date }}</td>
+
+            <td class="text-center align-middle">
+                {% if req.status == 'pending' %}
+                    <form method="POST" action="">
+                        {% csrf_token %}
+                        <input type="hidden" name="request_id" value="{{ req.id }}">
+
+                        <button type="submit" name="action" value="approve" class="btn btn-success btn-sm me-1">Assign</button>
+
+                        <button type="submit" name="action" value="deny" class="btn btn-danger btn-sm">Deny</button>
+
+                    </form>
+                {%elif req.status == 'approved'%}
+                    <span class="badge bg-success">Assigned</span>
+                {%elif req.status == 'denied'%}
+                    <span class="badge bg-danger">Denied</span>
+                {% endif %}
+            </td>
         </tr>
     {% endfor %}
     </tbody>
 </table>
+
 {% else %}
 <p>No items are currently loaned out.</p>
 {% endif %}

@@ -105,9 +105,26 @@ def return_page(request):
     return render(request, 'inventory/return_page.html')
 
 def manage_page(request):
-    active_requests = Request.objects.filter(
-        status='approved',
-        actual_return_date__isnull=True)
+    if request.method == 'POST':
+        request_id = request.POST.get('request_id')
+        action = request.POST.get('action')
+
+        req = Request.objects.get(id=request_id)
+
+        if action == 'approve':
+            req.status = 'approved'
+            req.save()
+
+        elif action == 'deny':
+            req.status = 'denied'
+            req.save()
+
+            req.inventory.is_available = True
+            req.inventory.save()
+
+        return redirect('manage_page')
+
+    active_requests = Request.objects.exclude(status='returned')
 
     users = User.objects.all().order_by('username')
     username = request.GET.get('username')

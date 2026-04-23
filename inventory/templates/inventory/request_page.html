@@ -64,6 +64,7 @@
                     <th>Model</th>
                     <th>Manufacturer</th>
                     <th>Serial Number</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody>
@@ -73,10 +74,18 @@
                     <td>{{ req.inventory.product_model.model_name }}</td>
                     <td>{{ req.inventory.product_model.manufacturer }}</td>
                     <td>{{ req.inventory.serial_number }}</td>
+
+                    <td>
+                        {% if req.status == 'pending' %}
+                            <span class="badge bg-warning text-dark">Pending Approval</span>
+                        {% else %}
+                            <span class="badge bg-success">Assigned</span>
+                        {% endif %}
+                    </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="4" class="text-center text-muted">
+                    <td colspan="5" class="text-center text-muted">
                         You currently have no devices assigned to you.
                     </td>
                 </tr>
