@@ -33,7 +33,7 @@ class Request(models.Model):
     charger_requested = models.BooleanField(default=False)
 
     REQUEST_STATUS = (
-        ('pending', 'Pending'), ('approved', 'Approved'), ('returned', 'Returned'),
+        ('pending', 'Pending'), ('approved', 'Approved'), ('returned', 'Returned'), ('denied', 'Denied'),
     )
 
     status = models.CharField(
