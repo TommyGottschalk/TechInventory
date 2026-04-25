@@ -66,9 +66,6 @@ def index(request):
     return render(request, 'index.html', context=context)
 
 
-
-
-
 def request_page(request):
     #Data to display on the page
     available_items = Inventory.objects.filter(is_available=True)

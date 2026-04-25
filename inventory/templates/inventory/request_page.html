@@ -56,7 +56,7 @@
     </div>
 
     <div class="col-md-6">
-        <h5 class="mb-4">Devices Currently Assigned to You:</h5>
+        <h5 class="mb-4">Your Device Requests:</h5>
         <table class="table table-bordered border-dark">
             <thead class="table-light border-dark">
                 <tr>
@@ -78,8 +78,10 @@
                     <td>
                         {% if req.status == 'pending' %}
                             <span class="badge bg-warning text-dark">Pending Approval</span>
-                        {% else %}
+                        {% elif req.status == 'approved' %}
                             <span class="badge bg-success">Assigned</span>
+                        {% elif req.status == 'denied' %}
+                            <span class="badge bg-danger">Denied</span>
                         {% endif %}
                     </td>
                 </tr>
