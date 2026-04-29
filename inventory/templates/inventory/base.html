@@ -51,10 +51,19 @@
 
             <ul class="navbar-nav ms-auto">
                 {% if user.is_authenticated %}
+                
+                <li class="nav-item d-flex align-items-center">
+                    <span class="navbar-text text-white me-3">
+                        Hello, {{ user.username }}!
+                    </span>
+                </li>
+
                     <li class="nav-item">
                         <form action="{% url 'logout' %}" method="post" class="d-inline">
                             {% csrf_token %}
-                            <button type="submit" class="nav-link btn btn-link" style="border:none; background:none;">
+                            <button 
+                                type="submit" 
+                                class="nav-link btn btn-link">
                                 Log out
                             </button>
                         </form>

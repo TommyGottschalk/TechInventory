@@ -11,6 +11,7 @@ from django.db import IntegrityError
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from datetime import datetime
+from .forms import SignUpForm
 
 # Create your views here.
 def index(request):
@@ -249,12 +250,12 @@ def user_delete(request, pk):
 
 def signup(request):
     if request.method == "POST":
-        form = UserCreationForm(request.POST)
+        form = SignUpForm(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user)  
             return redirect("index")
     else:
-        form = UserCreationForm()
+        form = SignUpForm()
 
     return render(request, "registration/signup.html", {"form": form})
