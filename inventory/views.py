@@ -10,7 +10,7 @@ from .forms import UserAddForm, UserEditForm
 from django.db import IntegrityError
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
-from datetime import datetime
+from datetime import datetime, date
 from .forms import SignUpForm
 
 # Create your views here.
@@ -100,7 +100,53 @@ def request_page(request):
     return render(request, 'inventory/request_page.html', context)
 
 def return_page(request):
-    return render(request, 'inventory/return_page.html')
+    if request.method == 'POST':
+        request_id = request.POST.get('loans')
+
+        if request_id:
+            loan = get_object_or_404(
+                Request,
+                id=request_id,
+                user=request.user,
+                status='approved',
+                actual_return_date__isnull=True
+            )
+
+            loan.status = 'returned'
+            loan.actual_return_date = date.today()
+            loan.save()
+
+            loan.inventory.is_available = True
+            loan.inventory.save()
+
+        return redirect('return_page')
+
+    approved_loans = Request.objects.filter(
+        user = request.user,
+        status = 'approved',
+        actual_return_date__isnull = True
+    )
+
+    user_requests = Request.objects.filter(user=request.user).exclude(status__in=['returned', 'denied'])
+
+    active_requests = Request.objects.exclude(status='returned')
+    return_dates1 = active_requests.values_list(
+        'return_date', flat=True).distinct().order_by('return_date')
+
+    return_dates = []
+    for d in return_dates1:
+        return_dates.append({
+            'value': d.strftime('%Y-%m-%d'),
+            'label': d.strftime('%B %d, %Y'),
+        })
+
+    context = {
+        'approved_loans': approved_loans,
+        'user_requests': user_requests,
+        'return_dates': return_dates,
+    }
+
+    return render(request, 'inventory/return_page.html', context=context)
 
 def manage_page(request):
     if request.method == 'POST':

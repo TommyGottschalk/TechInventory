@@ -2,4 +2,64 @@
 
 {% block content %}
 <h1>Return Device</h1>
+    <form method="post">
+        {% csrf_token %}
+
+<div class="row">
+    <div class="col-md-6">
+        <p>Choose a device to return:</p>
+        <select name="loans" id="loan">
+        <option value="">Loaned Items</option>
+            {% for loan in approved_loans %}
+                <option value="{{ loan.id }}">
+                    {{ loan.inventory.serial_number }} -
+                    {{ loan.inventory.product_model.manufacturer }} -
+                    {{ loan.inventory.product_model.model_name }} -
+                    Due: {{ loan.return_date }}
+                </option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-primary">Return Device</button>
+    </div>
+        <div class="col-md-6">
+            <h5 class="mb-4">Your Device Requests:</h5>
+            <table class="table table-bordered border-dark">
+                <thead class="table-light border-dark">
+                    <tr>
+                        <th>Category</th>
+                        <th>Model</th>
+                        <th>Manufacturer</th>
+                        <th>Serial Number</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for req in user_requests %}
+                    <tr>
+                        <td>{{ req.inventory.product_model.category.category_name }}</td>
+                        <td>{{ req.inventory.product_model.model_name }}</td>
+                        <td>{{ req.inventory.product_model.manufacturer }}</td>
+                        <td>{{ req.inventory.serial_number }}</td>
+
+                        <td>
+                            {% if req.status == 'pending' %}
+                                <span class="badge bg-warning text-dark">Pending Approval</span>
+                            {% elif req.status == 'approved' %}
+                                <span class="badge bg-success">Assigned</span>
+                            {% elif req.status == 'denied' %}
+                                <span class="badge bg-danger">Denied</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted">
+                            You currently have no devices assigned to you.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </form>
 {% endblock %}
