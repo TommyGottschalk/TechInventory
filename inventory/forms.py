@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import Request
+from .models import Request, Inventory
 
 
 class SignUpForm(UserCreationForm):
@@ -51,4 +51,13 @@ class RequestEditForm(forms.ModelForm):
             'actual_return_date',
             'charger_requested',
             'status',
+        ]
+
+class InventoryEditForm(forms.ModelForm):
+    class Meta:
+        model = Inventory
+        fields = [
+            'product_model',
+            'storage_size',
+            'is_available',
         ]

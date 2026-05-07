@@ -1,0 +1,14 @@
+{% extends "inventory/base.html" %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+
+{% block content %}
+    <h1>Inventory Form</h1>
+
+    <form action="" method="POST">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <input type="submit" value="Submit" class="btn btn-primary">
+        <a href="{% url 'inventory_admin' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+{% endblock %}

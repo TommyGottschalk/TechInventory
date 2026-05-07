@@ -6,7 +6,7 @@ from .models import Category, ProductModel, Inventory, Request
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
-from .forms import UserAddForm, UserEditForm, RequestEditForm, SignUpForm
+from .forms import UserAddForm, UserEditForm, RequestEditForm, SignUpForm, InventoryEditForm
 from django.db import IntegrityError
 #from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
@@ -331,3 +331,44 @@ def request_update(request, pk):
     }
 
     return render(request, 'inventory/request_form.html', context)
+
+def inventory_admin(request):
+    inventory_list = Inventory.objects.all().order_by('serial_number')
+
+    context = {
+        'inventory_list': inventory_list,
+    }
+
+    return render(request, 'inventory/inventory_list.html', context)
+
+def inventory_update(request, pk):
+    item = get_object_or_404(Inventory, pk=pk)
+
+    if request.method == 'POST':
+        form = InventoryEditForm(request.POST, instance=item)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Inventory item has been updated successfully.")
+            return redirect('inventory_admin')
+    else:
+        form = InventoryEditForm(instance=item)
+
+    context = {
+        'form': form,
+        'item': item,
+    }
+
+    return render(request, 'inventory/inventory_form.html', context)
+
+
+def inventory_delete(request, pk):
+    item = get_object_or_404(Inventory, pk=pk)
+
+    try:
+        serial_number = item.serial_number
+        item.delete()
+        messages.success(request, serial_number + " has been deleted.")
+    except IntegrityError:
+        messages.success(request, item.serial_number + " cannot be deleted.")
+
+    return redirect('inventory_admin')

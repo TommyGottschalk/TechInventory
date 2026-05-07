@@ -15,4 +15,7 @@ urlpatterns = [
     path("accounts/", include("django.contrib.auth.urls")),
     path("accounts/signup/", signup, name="signup"),
     path('request/<int:pk>/update/', views.request_update, name='request_update'),
+    path('inventory/', views.inventory_admin, name='inventory_admin'),
+    path('inventory/<str:pk>/update/', views.inventory_update, name='inventory_update'),
+    path('inventory/<str:pk>/delete/', views.inventory_delete, name='inventory_delete'),
 ]
