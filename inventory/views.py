@@ -69,7 +69,7 @@ def index(request):
 def request_page(request):
     #Data to display on the page
     available_items = Inventory.objects.filter(is_available=True)
-    user_requests = Request.objects.filter(user=request.user)
+    user_requests = Request.objects.filter(user=request.user).exclude(status__in=['returned', 'denied'])
 
     if request.method == 'POST':
         #Get data from the form
