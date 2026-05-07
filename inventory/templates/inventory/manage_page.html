@@ -37,6 +37,7 @@
             <th>User</th>
             <th>Return Date</th>
             <th class="text-center">Actions</th>
+            <th class="text-center">Edit</th>
         </tr>
     </thead>
     <tbody>
@@ -66,6 +67,9 @@
                 {%elif req.status == 'denied'%}
                     <span class="badge bg-danger">Denied</span>
                 {% endif %}
+            </td>
+            <td class="text-center align-middle">
+                <a href="{% url 'request_update' pk=req.pk %}" class="btn btn-primary btn-sm">Edit</a>
             </td>
         </tr>
     {% endfor %}

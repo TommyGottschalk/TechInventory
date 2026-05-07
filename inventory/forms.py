@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
+from .models import Request
 
 
 class SignUpForm(UserCreationForm):
@@ -38,4 +39,16 @@ class UserEditForm(forms.ModelForm):
             'is_staff',
             'is_superuser',
             'is_active',
+        ]
+
+class RequestEditForm(forms.ModelForm):
+    class Meta:
+        model = Request
+        fields = [
+            'user',
+            'inventory',
+            'return_date',
+            'actual_return_date',
+            'charger_requested',
+            'status',
         ]

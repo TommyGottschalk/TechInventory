@@ -1,4 +1,4 @@
-from django.contrib.sites import requests
+#from django.contrib.sites import requests
 from django.shortcuts import render, redirect
 #import inventory
 #from django.views import generic
@@ -6,12 +6,11 @@ from .models import Category, ProductModel, Inventory, Request
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
-from .forms import UserAddForm, UserEditForm
+from .forms import UserAddForm, UserEditForm, RequestEditForm, SignUpForm
 from django.db import IntegrityError
-from django.contrib.auth.forms import UserCreationForm
+#from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from datetime import datetime, date
-from .forms import SignUpForm
 
 # Create your views here.
 def index(request):
@@ -305,3 +304,30 @@ def signup(request):
         form = SignUpForm()
 
     return render(request, "registration/signup.html", {"form": form})
+
+def request_update(request, pk):
+    req = get_object_or_404(Request, pk=pk)
+
+    if request.method == 'POST':
+        form = RequestEditForm(request.POST, instance=req)
+        if form.is_valid():
+            updated_request = form.save()
+
+            if updated_request.status == 'returned' or updated_request.status == 'denied':
+                updated_request.inventory.is_available = True
+                updated_request.inventory.save()
+            elif updated_request.status == 'approved':
+                updated_request.inventory.is_available = False
+                updated_request.inventory.save()
+
+            messages.success(request, "Request has been updated successfully.")
+            return redirect('manage_page')
+    else:
+        form = RequestEditForm(instance=req)
+
+    context = {
+        'form': form,
+        'req': req,
+    }
+
+    return render(request, 'inventory/request_form.html', context)
